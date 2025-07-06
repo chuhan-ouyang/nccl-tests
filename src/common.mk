@@ -60,10 +60,22 @@ NVCC_GENCODE ?= -gencode=arch=compute_35,code=sm_35 \
 endif
 
 NVCUFLAGS  := -ccbin $(CXX) $(NVCC_GENCODE) -std=c++11
+
+# Tell NVCC (and the GTL-enabled MPI libs) to target A100s
+# CRAY_ACCEL_TARGET ?= nvidia80
+# NVCUFLAGS       += -target-accel=$(CRAY_ACCEL_TARGET)
+
 CXXFLAGS   := -std=c++11
 
 LDFLAGS    := -L${CUDA_LIB} -lcudart -lrt
 NVLDFLAGS  := -L${CUDA_LIB} -l${CUDARTLIB} -lrt
+
+# — enable CUDA-aware MPI via Cray’s GTL on Perlmutter —
+ifeq ($(MPI),1)
+  # ensure the GTL .so is found in /opt/cray/pe/lib64
+  NVLDFLAGS += -L/opt/cray/pe/lib64 -lmpi_gtl_cuda
+endif
+
 
 ifeq ($(DEBUG), 0)
 NVCUFLAGS += -O3 -g
