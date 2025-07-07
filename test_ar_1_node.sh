@@ -13,4 +13,4 @@ srun \
   --ntasks=1 \
   --gpus-per-node=4 \
   --export=ALL \
-  ./build/sendrecv_perf -b 8 -e 8192M -f 2 -g 4 2>&1 | tee sr_1_node.log
+  ./build/all_reduce_perf -b 8 -e 8192M -f 2 -g 4 2>&1 | tee ar_1_node.log
